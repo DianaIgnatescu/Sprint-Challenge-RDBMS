@@ -24,6 +24,19 @@ server.post('/api/projects', (req, res) => {
   }
 });
 
+server.get('/api/projects', async (req, res) => {
+  try {
+    const result = await db('projects')
+        .then((projects) => {
+          const projectsWithCompletedBooleans = projects.map(project => ({ ...project, completed: Boolean(project.completed)}));
+          res.status(200).json(projectsWithCompletedBooleans);
+        });
+    res.status(200).json(result);
+  } catch(error) {
+    res.status(500).json({ errorMessage: 'The projects could not be retrieved.' });
+  }
+});
+
 server.post('/api/actions', (req, res) => {
   const { project_id, description, notes, completed } = req.body;
   const action = req.body;
