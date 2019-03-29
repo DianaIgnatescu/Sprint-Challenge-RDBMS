@@ -114,7 +114,7 @@ server.delete('/api/projects/:id', (req, res) => {
       .where({ id: id })
       .del()
       .then(id => {
-        res.status(200).json({ message: `Project ${id} removed from the database.` });
+        res.status(200).json({ message: `Project ${id} has been removed from the database.` });
       })
       .catch((error) => {
         res.status(500).json({ error: "The project record could not be deleted." });
@@ -126,8 +126,8 @@ server.delete('/api/actions/:id', (req, res) => {
   db('actions')
       .where({ id: id })
       .del()
-      .then(count => {
-        res.status(200).json({ message: `${count} item removed from the database.` });
+      .then(id => {
+        res.status(200).json({ message: `Action ${id} has been removed from the database.` });
       })
       .catch((error) => {
         res.status(500).json({ error: "The action record could not be deleted." });
