@@ -69,6 +69,29 @@ server.get('/api/actions', async (req, res) => {
   }
 });
 
+server.get('/api/projects/:id', (req, res) => {
+  const { id } = req.params;
+  db('projects')
+      .where({ id: id })
+      .first()
+      .then((project) => {
+        if (!project) {
+          res.status(404).json({ message: 'The project with the specified ID does not exist.' });
+        } else {
+          db('actions')
+              .where({ project_id: id })
+              .select('id', 'description', 'notes', 'completed')
+              .then(actions => {
+                const actionsWithCompletedBooleans = actions.map(action => ({ ...action, completed: Boolean(action.completed)}));
+                const projectWithActions = { ...project, completed: Boolean(project.completed), actions: actionsWithCompletedBooleans };
+                res.status(200).json(projectWithActions);
+              });
+        }
+      })
+      .catch((error) => {
+        res.status(500).json({ error: 'The project information could not be retrieved.' });
+      });
+});
 
 
 const port = 5000;
