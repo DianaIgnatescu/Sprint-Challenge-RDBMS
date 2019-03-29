@@ -41,7 +41,7 @@ server.post('/api/actions', (req, res) => {
   const { project_id, description, notes, completed } = req.body;
   const action = req.body;
   if (!description || !notes || !project_id) {
-    res.status(400).json({ errorMessage: 'Please provide a name and project_id for the action.' });
+    res.status(400).json({ errorMessage: 'Please provide a name, description, and project_id for the action.' });
   } else {
     db('actions').insert({ description, notes, project_id, completed })
         .then(arrayOfIds => {
