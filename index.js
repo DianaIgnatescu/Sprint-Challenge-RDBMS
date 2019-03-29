@@ -93,6 +93,21 @@ server.get('/api/projects/:id', (req, res) => {
       });
 });
 
+server.get('/api/actions/:id', async (req, res) => {
+  try {
+    const { id } = req.params;
+    const result = await db('actions')
+        .where({ id: id })
+        .first()
+        .then((action) => {
+          const actionWithCompletedBoolean = { ...action, completed: Boolean(action.completed) };
+          res.status(200).json(actionWithCompletedBoolean);
+        });
+    res.status(200).json(result);
+  } catch(error) {
+    res.status(500).json({ errorMessage: 'The action with the specified ID could not be retrieved.' });
+  }
+});
 
 const port = 5000;
 server.listen(port, () => console.log(`Listening on http://localhost: ${port}!`));
