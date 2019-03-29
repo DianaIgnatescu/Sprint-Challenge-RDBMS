@@ -56,6 +56,21 @@ server.post('/api/actions', (req, res) => {
   }
 });
 
+server.get('/api/actions', async (req, res) => {
+  try {
+    const result = await db('actions')
+        .then((actions) => {
+          const actionsWithCompletedBooleans = actions.map(action => ({ ...action, completed: Boolean(action.completed)}));
+          res.status(200).json(actionsWithCompletedBooleans);
+        });
+    res.status(200).json(result);
+  } catch(error) {
+    res.status(500).json({ errorMessage: 'The actions could not be retrieved.' });
+  }
+});
+
+
+
 const port = 5000;
 server.listen(port, () => console.log(`Listening on http://localhost: ${port}!`));
 
