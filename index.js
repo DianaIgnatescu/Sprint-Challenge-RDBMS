@@ -39,7 +39,6 @@ server.get('/api/projects', async (req, res) => {
 
 server.post('/api/actions', (req, res) => {
   const { project_id, description, notes, completed } = req.body;
-  const action = req.body;
   if (!description || !notes || !project_id) {
     res.status(400).json({ errorMessage: 'Please provide a name, description, and project_id for the action.' });
   } else {
@@ -114,8 +113,8 @@ server.delete('/api/projects/:id', (req, res) => {
   db('projects')
       .where({ id: id })
       .del()
-      .then(count => {
-        res.status(200).json({ message: `${count} item removed from the database.` });
+      .then(id => {
+        res.status(200).json({ message: `Project ${id} removed from the database.` });
       })
       .catch((error) => {
         res.status(500).json({ error: "The project record could not be deleted." });
