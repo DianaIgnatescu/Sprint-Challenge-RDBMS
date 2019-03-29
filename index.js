@@ -109,6 +109,70 @@ server.get('/api/actions/:id', async (req, res) => {
   }
 });
 
+server.delete('/api/projects/:id', (req, res) => {
+  const { id } = req.params;
+  db('projects')
+      .where({ id: id })
+      .del()
+      .then(count => {
+        res.status(200).json({ message: `${count} item removed from the database.` });
+      })
+      .catch((error) => {
+        res.status(500).json({ error: "The project record could not be deleted." });
+      });
+});
+
+server.delete('/api/actions/:id', (req, res) => {
+  const { id } = req.params;
+  db('actions')
+      .where({ id: id })
+      .del()
+      .then(count => {
+        res.status(200).json({ message: `${count} item removed from the database.` });
+      })
+      .catch((error) => {
+        res.status(500).json({ error: "The action record could not be deleted." });
+      });
+});
+
+server.put('/api/projects/:id', (req, res) => {
+  const { id } = req.params;
+  const project = req.body;
+  if (!project) {
+    res.status(400).json({ errorMessage: 'Please provide a name and description for the project.' });
+  } else {
+    db('projects')
+        .where({ id: id })
+        .update(project)
+        .then(() => {
+          return db('projects').where({id: id }).first();
+        })
+        .then( record => res.status(200).json(record))
+        .catch(error => {
+          res.status(500).json({ errorMessage: 'The project information could not be modified.' })
+        });
+  }
+});
+
+server.put('/api/actions/:id', (req, res) => {
+  const { id } = req.params;
+  const action = req.body;
+  if (!action) {
+    res.status(400).json({ errorMessage: 'Please provide a description, notes and a project_id for the action.' });
+  } else {
+    db('actions')
+        .where({ id: id })
+        .update(action)
+        .then(() => {
+          return db('actions').where({id: id }).first();
+        })
+        .then( record => res.status(200).json(record))
+        .catch(error => {
+          res.status(500).json({ errorMessage: 'The action information could not be modified.' })
+        });
+  }
+});
+
 const port = 5000;
 server.listen(port, () => console.log(`Listening on http://localhost: ${port}!`));
 
